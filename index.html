@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>チャット</title>
+    <style>
+        #chat-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        #chat-area {
+            height: 300px;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+        }
+        input, button {
+            display: block;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-area"></div>
+        <input type="text" id="name" placeholder="名前を入力">
+        <input type="text" id="message" placeholder="メッセージを入力">
+        <button id="send-button">送信</button>
+    </div>
+
+    <script>
+        const nameInput = document.getElementById("name");
+        const messageInput = document.getElementById("message");
+        const sendButton = document.getElementById("send-button");
+        const chatArea = document.getElementById("chat-area");
+
+        // 名前をlocalStorageから取得
+        if (localStorage.getItem("chatName")) {
+            nameInput.value = localStorage.getItem("chatName");
+        }
+
+        const websocket = new WebSocket("ws://163.43.145.48:3000"); // WebSocketサーバーのアドレスに合わせて変更
+
+        websocket.addEventListener("open", (event) => {
+            console.log("WebSocket接続が確立されました");
+        });
+
+        websocket.addEventListener("message", (event) => {
+            const message = event.data;
+            appendMessage(message);
+        });
+
+        sendButton.addEventListener("click", () => {
+            sendMessage();
+        });
+
+        messageInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const name = nameInput.value;
+            // 名前をlocalStorageに保存
+            localStorage.setItem("chatName", name);
+            const message = messageInput.value;
+            if (message) {
+                const chatMessage = `${name}: ${message}`;
+                websocket.send(chatMessage);
+                appendMessage(chatMessage); // 送信したメッセージを表示
+                messageInput.value = "";
+            }
+        }
+
+        function appendMessage(message) {
+            const messageElement = document.createElement("div");
+            if (typeof message === "string") {
+                messageElement.textContent = message;
+            } else {
+                // Blob メッセージをテキストに変換
+                message.text().then((text) => {
+                    messageElement.textContent = text;
+                });
+            }
+            chatArea.appendChild(messageElement);
+            chatArea.scrollTop = chatArea.scrollHeight; // スクロールを一番下に移動
+        }
+    </script>
+</body>
+</html>
