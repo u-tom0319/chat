@@ -37,7 +37,7 @@
             nameInput.value = localStorage.getItem("chatName");
         }
 
-        const websocket = new WebSocket("ws://localhost:3000"); // WebSocketサーバーのアドレスに合わせて変更
+        const websocket = new WebSocket("ws://163.43.145.48:3000"); // WebSocketサーバーのアドレスに合わせて変更
 
         websocket.addEventListener("open", (event) => {
             console.log("WebSocket接続が確立されました");
@@ -64,7 +64,7 @@
             localStorage.setItem("chatName", name);
             const message = messageInput.value;
             if (message) {
-                const chatMessage = `${getCurrentTime()} ${name}: ${message}`;
+                const chatMessage = `${getCurrentTime()} ${name}:<br>${message}`;
                 websocket.send(chatMessage);
                 appendMessage(chatMessage); // 送信したメッセージを表示
                 messageInput.value = "";
