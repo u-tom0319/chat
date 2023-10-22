@@ -32,12 +32,20 @@
         const sendButton = document.getElementById("send-button");
         const chatArea = document.getElementById("chat-area");
 
+        // チャット履歴をlocalStorageから取得
+        const chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
+
         // 名前をlocalStorageから取得
         if (localStorage.getItem("chatName")) {
             nameInput.value = localStorage.getItem("chatName");
         }
 
-        const websocket = new WebSocket("ws://163.43.145.48:3000"); // WebSocketサーバーのアドレスに合わせて変更
+        // ページ読み込み時に過去のチャット履歴を表示
+        chatHistory.forEach(message => {
+            appendMessage(message);
+        });
+
+        const websocket = new WebSocket("ws://localhost:3000"); // WebSocketサーバーのアドレスに合わせて変更
 
         websocket.addEventListener("open", (event) => {
             console.log("WebSocket接続が確立されました");
@@ -46,6 +54,10 @@
         websocket.addEventListener("message", (event) => {
             const message = event.data;
             appendMessage(message);
+            // チャット履歴にメッセージを追加
+            chatHistory.push(message);
+            // チャット履歴をlocalStorageに保存
+            localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
         });
 
         sendButton.addEventListener("click", () => {
@@ -67,6 +79,10 @@
                 const chatMessage = `${name}: ${message}`;
                 websocket.send(chatMessage);
                 appendMessage(chatMessage); // 送信したメッセージを表示
+                // チャット履歴にメッセージを追加
+                chatHistory.push(chatMessage);
+                // チャット履歴をlocalStorageに保存
+                localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
                 messageInput.value = "";
             }
         }
