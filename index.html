@@ -32,6 +32,14 @@
         const sendButton = document.getElementById("send-button");
         const chatArea = document.getElementById("chat-area");
 
+        const getCurrentTime = () => {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, "0");
+            const minutes = now.getMinutes().toString().padStart(2, "0");
+            const seconds = now.getSeconds().toString().padStart(2, "0");
+            return `[${hours}:${minutes}:${seconds}]`;
+        };
+        
         // 名前をlocalStorageから取得
         if (localStorage.getItem("chatName")) {
             nameInput.value = localStorage.getItem("chatName");
@@ -64,7 +72,7 @@
             localStorage.setItem("chatName", name);
             const message = messageInput.value;
             if (message) {
-                const chatMessage = `${getCurrentTime()} ${name}:${message}`;
+                const chatMessage = `${getCurrentTime()} ${name}: ${message}`;
                 websocket.send(chatMessage);
                 appendMessage(chatMessage); // 送信したメッセージを表示
                 messageInput.value = "";
