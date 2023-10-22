@@ -64,7 +64,7 @@
             localStorage.setItem("chatName", name);
             const message = messageInput.value;
             if (message) {
-                const chatMessage = `${getCurrentTime()} ${name}:<br>${message}`;
+                const chatMessage = `${getCurrentTime()} ${name}: ${message}`;
                 websocket.send(chatMessage);
                 appendMessage(chatMessage); // 送信したメッセージを表示
                 messageInput.value = "";
