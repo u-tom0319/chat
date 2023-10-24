@@ -45,7 +45,7 @@
             nameInput.value = localStorage.getItem("chatName");
         }
 
-        const websocket = new WebSocket("wss://163.43.145.48:3000"); // WebSocketサーバーのアドレスに合わせて変更
+        const websocket = new WebSocket("ws://163.43.145.48:3000"); // WebSocketサーバーのアドレスに合わせて変更
 
         websocket.addEventListener("open", (event) => {
             console.log("WebSocket接続が確立されました");
