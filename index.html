@@ -171,8 +171,8 @@
             localStorage.setItem("chatName", name);
             const message = messageInput.value;
             if (message) {
-                const chatMessage = `${getCurrentTime()} ${name}:`;
-                const chatMessage2 = `「${message}」`;
+                const chatMessage = `|${getCurrentTime()} ${name}:`;
+                const chatMessage2 = `|    ${message}`;
                 websocket.send(chatMessage);
                 appendMessage(chatMessage); 
                 websocket.send(chatMessage2);
